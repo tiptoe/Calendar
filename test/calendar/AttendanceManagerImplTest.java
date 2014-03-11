@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  *
  * @author Honza
  */
-public class AttendancemanagerTest {
+public class AttendanceManagerImplTest {
     
     private AttendanceManagerImpl manager;
     
