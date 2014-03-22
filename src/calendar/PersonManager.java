@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  *
- * @author Honza
+ * @author Jan Smerda
  */
 public interface PersonManager {
     

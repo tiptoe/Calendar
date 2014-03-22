@@ -2,7 +2,7 @@ package calendar;
 
 /**
  *
- * @author Honza
+ * @author Jan Smerda
  */
 public class Person {
     
@@ -41,6 +41,11 @@ public class Person {
  
     public void setNote(String note) {
         this.note = note;
+    }
+    
+    @Override
+    public String toString() {
+        return "Person id=" + id;
     }
     
     @Override

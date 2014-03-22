@@ -1,5 +1,8 @@
 package calendar;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,15 +16,28 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Honza
+ * @author Jan Smerda
  */
 public class PersonManagerImplTest {
     
-    private PersonManagerImpl manager;
+    private PersonManagerImpl manager; 
+    private Connection conn;
     
     @Before
-    public void setUp() {
-        manager = new PersonManagerImpl();
+    public void setUp() throws SQLException {
+        conn = DriverManager.getConnection("jdbc:derby:memory:PersonManagerTest;create=true");
+        conn.prepareStatement("CREATE TABLE PERSON ("
+                + "id int primary key generated always as identity,"
+                + "name varchar(50),"
+                + "email varchar(50),"
+                + "note varchar(255))").executeUpdate();
+        manager = new PersonManagerImpl(conn);
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        conn.prepareStatement("DROP TABLE PERSON").executeUpdate();        
+        conn.close();
     }
     
     @Test
@@ -39,7 +55,7 @@ public class PersonManagerImplTest {
     }
     
     @Test
-    public void createPersonWithWrongAttributes() {
+    public void createPersonWithWrongAttributes1() {
         
         //Creating null person
         try {
@@ -48,7 +64,10 @@ public class PersonManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //OK
         }
-        
+    }
+    
+    @Test
+    public void createPersonWithWrongAttributes2() {
         //Person should not have empty name.
         Person person = newPerson(null, "email", "note");
         try {
@@ -57,24 +76,28 @@ public class PersonManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //OK
         }
-        
+    }
+    
+    @Test
+    public void createPersonWithWrongAttributes3() {
         //Person should not have empty email.
-        person = newPerson("name", null, "note");
+        Person person = newPerson("name", null, "note");
         try {
             manager.createPerson(person);
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
         }
-        
+    }
+    
+    @Test
+    public void createPersonWithWrongAttributes4() {
         //Empty note is ok
-        person = newPerson("name", "email", null);
-        person.setId(1);
+        Person person = newPerson("name", "email", null);
         manager.createPerson(person);
         Person result = manager.getPersonById(person.getId());
         assertNotNull(result);
         assertNull(result.getNote());
-        
         
     }
     
@@ -99,7 +122,7 @@ public class PersonManagerImplTest {
         person = manager.getPersonById(personId);
         person.setEmail("new email");
         manager.updatePerson(person);
-        assertEquals("First Name", person.getName());
+        assertEquals("New Name", person.getName());
         assertEquals("new email", person.getEmail());
         assertEquals("first note", person.getNote());
                 
@@ -107,16 +130,16 @@ public class PersonManagerImplTest {
         person = manager.getPersonById(personId);
         person.setNote("new note");
         manager.updatePerson(person);
-        assertEquals("First Name", person.getName());
-        assertEquals("first email", person.getEmail());
+        assertEquals("New Name", person.getName());
+        assertEquals("new email", person.getEmail());
         assertEquals("new note", person.getNote());
         
          //changing person's note to null should be ok
         person = manager.getPersonById(personId);
         person.setNote(null);
         manager.updatePerson(person);
-        assertEquals("First Name", person.getName());
-        assertEquals("first email", person.getEmail());
+        assertEquals("New Name", person.getName());
+        assertEquals("new email", person.getEmail());
         assertNull(person.getNote());
         
         //Make sure that only correct record was changed
@@ -221,7 +244,7 @@ public class PersonManagerImplTest {
         
         //try deleting person with changed id
         try {
-            person.setId(1);
+            person.setId(2);
             manager.deletePerson(person);
             fail();
         } catch (IllegalArgumentException ex) {
