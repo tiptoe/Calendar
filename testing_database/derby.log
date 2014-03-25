@@ -1,0 +1,31 @@
+Mon Mar 24 20:42:52 CET 2014 : Síovı server Apache Derby - 10.8.3.0 - (1405108): spuštìn a pøipraven pøijímat pøipojení na portu 1527 v {3} 
+----------------------------------------------------------------
+Mon Mar 24 20:43:10 CET 2014:
+ Zavádìní serveru Derby verze The Apache Software Foundation - Apache Derby - 10.8.3.0 - (1405108): instance a816c00e-0144-f59d-eeb0-ffff923fc13a
+v adresáøi databáze D:\SkyDrive\school\2_mag\4.SEMESTR\PV168 Seminar z programovani v jazyce Java\projekt\Calendar\testing_database\calendar  sun.misc.Launcher$AppClassLoader@596b753 
+
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_40-b43
+user.dir=C:\Program Files\Java\jdk1.7.0_40\db
+os.name=Windows 8
+os.arch=amd64
+os.version=6.2
+derby.system.home=D:\SkyDrive\school\2_mag\4.SEMESTR\PV168 Seminar z programovani v jazyce Java\projekt\Calendar\testing_database
+Byl spuštìn zavadìè tøídy databáze - derby.database.classpath=''
+----------------------------------------------------------------
+Mon Mar 24 20:43:14 CET 2014:
+Vypínání instance a816c00e-0144-f59d-eeb0-ffff923fc13a
+Mon Mar 24 20:43:15 CET 2014 Thread[DRDAConnThread_4,5,main] (DATABASE = calendar), (DRDAID = {2}), Vypnutí databáze 'calendar'.
+----------------------------------------------------------------
+Mon Mar 24 20:43:44 CET 2014:
+ Zavádìní serveru Derby verze The Apache Software Foundation - Apache Derby - 10.8.3.0 - (1405108): instance 6c44409f-0144-f59d-eeb0-ffff923fc13a
+v adresáøi databáze D:\SkyDrive\school\2_mag\4.SEMESTR\PV168 Seminar z programovani v jazyce Java\projekt\Calendar\testing_database\calendar  sun.misc.Launcher$AppClassLoader@596b753 
+
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_40-b43
+user.dir=C:\Program Files\Java\jdk1.7.0_40\db
+os.name=Windows 8
+os.arch=amd64
+os.version=6.2
+derby.system.home=D:\SkyDrive\school\2_mag\4.SEMESTR\PV168 Seminar z programovani v jazyce Java\projekt\Calendar\testing_database
+Byl spuštìn zavadìè tøídy databáze - derby.database.classpath=''
