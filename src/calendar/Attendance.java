@@ -8,7 +8,7 @@ import java.util.Date;
 
 /**
  *
- * @author Honza
+ * @author Jan Smerda, Jiri Stary
  */
 public class Attendance {
     
@@ -19,6 +19,10 @@ public class Attendance {
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
     
     public Event getEvent() {
