@@ -1,14 +1,22 @@
 package calendar;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import javax.sql.DataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.apache.commons.dbcp.BasicDataSource;
+import common.ValidationException;
+import common.IllegalEntityException;
+import common.DBUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Test class of GraveManagerImpl.
@@ -18,24 +26,26 @@ import static org.junit.Assert.*;
 public class EventManagerImplTest {
     
     private EventManagerImpl manager;
-    private Connection connection;
+    private DataSource ds;
+    
+    private static DataSource prepareDataSource() throws SQLException {
+        BasicDataSource ds = new BasicDataSource();
+        //we will use in memory database
+        ds.setUrl("jdbc:derby:memory:eventmgr-test;create=true");
+        return ds;
+    }
     
     @Before
     public void setUp() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:derby:memory:EventManagerTest;create=true");
-        connection.prepareStatement("CREATE TABLE EVENT ("
-                + "id int primary key generated always as identity,"
-                + "name varchar(255),"
-                + "startDate TIMESTAMP,"
-                + "endDate TIMESTAMP,"
-                + "note varchar(255))").executeUpdate();
-        manager = new EventManagerImpl(connection);
+        ds = prepareDataSource();
+        DBUtils.executeSqlScript(ds,PersonManager.class.getResource("createTables.sql"));
+        manager = new EventManagerImpl();
+        manager.setDataSource(ds);
     }
     
     @After
     public void tearDown() throws SQLException {
-        connection.prepareStatement("DROP TABLE EVENT").executeUpdate();        
-        connection.close();
+        DBUtils.executeSqlScript(ds,PersonManager.class.getResource("dropTables.sql"));
     }
     
     /**
@@ -65,7 +75,7 @@ public class EventManagerImplTest {
         manager.createEvent(null);
     }
     
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = IllegalEntityException.class)
     public void testCreateEventWithWrongAttributes2() {
         Date startDate = new Date(1262277038988L);
         Date endDate = new Date(1262299038988L);
@@ -247,7 +257,7 @@ public class EventManagerImplTest {
         manager.updateEvent(null);
     }
     
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = IllegalEntityException.class)
     public void updateEventWithWrongAttributes2() {
         Integer eventId = setUpTestEvent();    
         
@@ -256,7 +266,7 @@ public class EventManagerImplTest {
         manager.updateEvent(event);        
     }
     
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = IllegalEntityException.class)
     public void updateEventWithWrongAttributes3() {
         Integer eventId = setUpTestEvent();     
  
@@ -370,7 +380,7 @@ public class EventManagerImplTest {
         manager.deleteEvent(null);
     }
     
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = IllegalEntityException.class)
     public void deleteEventWithWrongAttributes2() {     
         Integer eventId = setUpTestEvent();
         
@@ -379,7 +389,7 @@ public class EventManagerImplTest {
         manager.deleteEvent(event);
     }
         
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = IllegalEntityException.class)
     public void deleteEventWithWrongAttributes3() { 
         Integer eventId = setUpTestEvent();
         
@@ -408,6 +418,39 @@ public class EventManagerImplTest {
         assertDeepEquals(event, result);
     }
     
+    /**
+     * Test of getEventById method of class EventManagerImpl.
+     */
+    @Test
+    public void testFindEventsByDate() {
+        
+        Date startDate = new Date(10L);
+        Date endDate = new Date(13L);
+        
+        assertTrue(manager.findEventsByDate(startDate, endDate).isEmpty());
+        
+        
+        Event e1 = newTestEvent("My event", new Date(0L), new Date(14L),"Super awesome event!");
+        Event e2 = newTestEvent("My event", new Date(1L), new Date(8L),"Super awesome event!");
+        Event e3 = newTestEvent("My event", new Date(9L), new Date(10L),"Super awesome event!");
+        Event e4 = newTestEvent("My event", new Date(10L), new Date(11L),"Super awesome event!");
+        Event e5 = newTestEvent("My event", new Date(13L), new Date(16L),"Super awesome event!");
+        Event e6 = newTestEvent("My event", new Date(14L), new Date(16L),"Super awesome event!");
+
+        manager.createEvent(e1);
+        manager.createEvent(e2);
+        manager.createEvent(e3);
+        manager.createEvent(e4);
+        manager.createEvent(e5);
+        manager.createEvent(e6);
+
+        List<Event> expected = Arrays.asList(e1, e3, e4, e5);
+        List<Event> actual = manager.findEventsByDate(startDate, endDate);
+        
+        assertEventCollectionDeepEquals(expected, actual);
+        
+    }
+    
     private static Event newTestEvent(String name, Date startDate, Date endDate, String note) {
         Event event = new Event();
         event.setName(name);
@@ -425,20 +468,42 @@ public class EventManagerImplTest {
         
         return event.getId();
     }
-    
-    private void assertDeepEquals(List<Event> expectedList, List<Event> actualList) {
-        for (int i = 0; i < expectedList.size(); i++) {
-            Event expected = expectedList.get(i);
-            Event actual = actualList.get(i);
-            assertDeepEquals(expected, actual);
-        }
-    }
 
-    private void assertDeepEquals(Event expected, Event actual) {
+    private static void assertDeepEquals(Event expected, Event actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getStartDate(), actual.getStartDate());
         assertEquals(expected.getEndDate(), actual.getEndDate());
         assertEquals(expected.getNote(), actual.getNote());
+    }
+    
+     private static Comparator<Event> eventKeyComparator = new Comparator<Event>() {
+
+        @Override
+        public int compare(Event o1, Event o2) {
+            Integer k1 = o1.getId();
+            Integer k2 = o2.getId();
+            if (k1 == null && k2 == null) {
+                return 0;
+            } else if (k1 == null && k2 != null) {
+                return -1;
+            } else if (k1 != null && k2 == null) {
+                return 1;
+            } else {
+                return k1.compareTo(k2);
+            }
+        }
+    };
+    
+    static void assertEventCollectionDeepEquals(List<Event> expected, List<Event> actual) {
+        
+        assertEquals(expected.size(), actual.size());
+        List<Event> expectedSortedList = new ArrayList<Event>(expected);
+        List<Event> actualSortedList = new ArrayList<Event>(actual);
+        Collections.sort(expectedSortedList,eventKeyComparator);
+        Collections.sort(actualSortedList,eventKeyComparator);
+        for (int i = 0; i < expectedSortedList.size(); i++) {
+            assertDeepEquals(expectedSortedList.get(i), actualSortedList.get(i));
+        }   
     }
 }

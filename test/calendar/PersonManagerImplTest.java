@@ -1,18 +1,17 @@
 package calendar;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import javax.sql.DataSource;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import common.DBUtils;
 
 /**
  *
@@ -21,23 +20,26 @@ import static org.junit.Assert.*;
 public class PersonManagerImplTest {
     
     private PersonManagerImpl manager; 
-    private Connection conn;
+    private DataSource ds;
+    
+    private static DataSource prepareDataSource() throws SQLException {
+        BasicDataSource ds = new BasicDataSource();
+        //we will use in memory database
+        ds.setUrl("jdbc:derby:memory:gravemgr-test;create=true");
+        return ds;
+    }
     
     @Before
     public void setUp() throws SQLException {
-        conn = DriverManager.getConnection("jdbc:derby:memory:PersonManagerTest;create=true");
-        conn.prepareStatement("CREATE TABLE PERSON ("
-                + "id int primary key generated always as identity,"
-                + "name varchar(50),"
-                + "email varchar(50),"
-                + "note varchar(255))").executeUpdate();
-        manager = new PersonManagerImpl(conn);
+        ds = prepareDataSource();
+        DBUtils.executeSqlScript(ds,PersonManager.class.getResource("createTables.sql"));
+        manager = new PersonManagerImpl();
+        manager.setDataSource(ds);
     }
 
     @After
     public void tearDown() throws SQLException {
-        conn.prepareStatement("DROP TABLE PERSON").executeUpdate();        
-        conn.close();
+        DBUtils.executeSqlScript(ds,PersonManager.class.getResource("dropTables.sql"));
     }
     
     @Test
@@ -50,7 +52,7 @@ public class PersonManagerImplTest {
         Person result = manager.getPersonById(personId);
         assertEquals(person, result);
         assertNotSame(person, result);
-        assertDeepEquals(person, result);
+        assertPersonDeepEquals(person, result);
                 
     }
     
@@ -143,7 +145,7 @@ public class PersonManagerImplTest {
         assertNull(person.getNote());
         
         //Make sure that only correct record was changed
-        assertDeepEquals(person2, manager.getPersonById(person2.getId()));
+        assertPersonDeepEquals(person2, manager.getPersonById(person2.getId()));
     }
 
     @Test
@@ -160,6 +162,14 @@ public class PersonManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //pass test
         }
+    }
+    
+    @Test
+    public void updatePersonWithWrongAttributes2() {
+        Person person = newPerson("name", "email", "note");
+        manager.createPerson(person);
+        person.setId(1);
+        Integer personId = person.getId();
         
         //try changing id to null
         try {
@@ -170,6 +180,14 @@ public class PersonManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //pass test
         }
+    }
+    
+    @Test
+    public void updatePersonWithWrongAttributes3() {
+        Person person = newPerson("name", "email", "note");
+        manager.createPerson(person);
+        person.setId(1);
+        Integer personId = person.getId();
         
         //try changing the id
         try {
@@ -180,6 +198,14 @@ public class PersonManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //pass test
         }
+    }
+    
+    @Test
+    public void updatePersonWithWrongAttributes4() {
+        Person person = newPerson("name", "email", "note");
+        manager.createPerson(person);
+        person.setId(1);
+        Integer personId = person.getId();
         
         //try changing name to null
         try {
@@ -190,6 +216,14 @@ public class PersonManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //pass test
         }
+    }
+    
+    @Test   
+    public void updatePersonWithWrongAttributes5() {
+        Person person = newPerson("name", "email", "note");
+        manager.createPerson(person);
+        person.setId(1);
+        Integer personId = person.getId();
         
         //try changing email to null
         try {
@@ -200,8 +234,6 @@ public class PersonManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //pass test
         }
-        
-        
     }
     
     @Test
@@ -221,7 +253,7 @@ public class PersonManagerImplTest {
     }
     
     @Test
-    public void deletePersonWithWrongAttributes() {
+    public void deletePersonWithWrongAttributes1() {
         
         Person person = newPerson("First Name", "first email", "first note");
         
@@ -232,6 +264,11 @@ public class PersonManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //pass test
         }
+    }
+    
+    public void deletePersonWithWrongAttributes2() {
+        
+        Person person = newPerson("First Name", "first email", "first note");
         
         //try deleting person with null id
         try {
@@ -241,6 +278,10 @@ public class PersonManagerImplTest {
         } catch (IllegalArgumentException ex) {
             //pass test
         }
+    }
+    public void deletePersonWithWrongAttributes3() {
+        
+        Person person = newPerson("First Name", "first email", "first note");
         
         //try deleting person with changed id
         try {
@@ -270,11 +311,11 @@ public class PersonManagerImplTest {
         Collections.sort(expected,idComparator);
 
         assertEquals(expected, actual);
-        assertDeepEquals(expected, actual);
+        assertPersonCollectionDeepEquals(expected, actual);
     }
     
     
-    public Person newPerson(String name, String email, String note) {
+    public static Person newPerson(String name, String email, String note) {
         Person person = new Person();
         person.setName(name);
         person.setEmail(email);
@@ -282,18 +323,18 @@ public class PersonManagerImplTest {
         return person;
     }
     
-    private void assertDeepEquals(Person expected, Person actual) {
+    public static void assertPersonDeepEquals(Person expected, Person actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getEmail(), actual.getEmail());
         assertEquals(expected.getNote(), actual.getNote());
     }
     
-    private void assertDeepEquals(List<Person> expectedList, List<Person> actualList) {
+    public static void assertPersonCollectionDeepEquals(List<Person> expectedList, List<Person> actualList) {
         for (int i = 0; i < expectedList.size(); i++) {
             Person expectedPerson = expectedList.get(i);
             Person actualPerson = actualList.get(i);
-            assertDeepEquals(expectedPerson, actualPerson);
+            assertPersonDeepEquals(expectedPerson, actualPerson);
         }
     }
      
