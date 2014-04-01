@@ -26,7 +26,7 @@ import java.util.Date;
  */
 public class AttendanceManagerImpl implements AttendanceManager {
 
-    public static final Logger logger = Logger.getLogger(PersonManagerImpl.class.getName());
+    public static final Logger logger = Logger.getLogger(AttendanceManagerImpl.class.getName());
     private static DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
@@ -183,8 +183,10 @@ public class AttendanceManagerImpl implements AttendanceManager {
                 throw new ServiceFailureException(
                         "Internal integrity error: more attendances with the same id found!");
             }
+            rs.close();
             return result;
         } else {
+            rs.close();
             return null;
         }
     }

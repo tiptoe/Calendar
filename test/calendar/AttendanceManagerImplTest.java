@@ -22,6 +22,7 @@ import static calendar.PersonManagerImplTest.newPerson;
 import static calendar.PersonManagerImplTest.assertPersonDeepEquals;
 import static calendar.PersonManagerImplTest.assertPersonCollectionDeepEquals;
 import common.IllegalEntityException;
+import org.junit.Ignore;
 
 /**
  *
@@ -127,6 +128,49 @@ public class AttendanceManagerImplTest {
     public void testCreateAttendanceWithWrongAttributes4() {   
         Attendance attendance = newAttendance(event1, null, new Date(110L));
         attendanceManager.createAttendance(attendance);
+    }
+    
+    /**
+     * Test of getAttendanceById method of class AttendanceManagerImpl.
+     */
+    @Test
+    public void testGetAttendanceById() {
+        
+        assertNull(attendanceManager.getAttendanceById(10));
+        
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance);
+        
+        Integer attendanceId = attendance.getId();
+
+        Attendance result = attendanceManager.getAttendanceById(attendanceId);
+        assertEquals(attendance, result);
+        assertAttendanceDeepEquals(attendance, result);
+    }
+    
+    /**
+     * Tests of updateAttendance method of class AttendanceManagerImpl.
+     */
+    @Ignore
+    public void updateAttendance() {
+       
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance);
+        
+        Attendance attendance2 = newAttendance(event2, person2, new Date(120L));
+        attendanceManager.createAttendance(attendance2);
+        
+        Integer attendanceId = attendance.getId();
+        
+        //attendance = attendanceManager.getAttendanceById(attendanceId);
+
+        attendance = attendanceManager.getAttendanceById(attendanceId);
+        attendance.setPlannedArrivalTime(null);
+        attendanceManager.updateAttendance(attendance);
+        assertNull(attendance.getPlannedArrivalTime());
+        
+        // Check if updates didn't affected other records
+        assertAttendanceDeepEquals(attendance2, attendanceManager.getAttendanceById(attendance2.getId()));
     }
 
     @Test
