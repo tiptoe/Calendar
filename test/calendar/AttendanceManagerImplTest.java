@@ -21,6 +21,7 @@ import java.util.Date;
 import static calendar.PersonManagerImplTest.newPerson;
 import static calendar.PersonManagerImplTest.assertPersonDeepEquals;
 import static calendar.PersonManagerImplTest.assertPersonCollectionDeepEquals;
+import common.IllegalEntityException;
 
 /**
  *
@@ -82,6 +83,50 @@ public class AttendanceManagerImplTest {
     @After
     public void tearDown() throws SQLException {
         DBUtils.executeSqlScript(ds, AttendanceManager.class.getResource("dropTables.sql"));
+    }
+    
+    /**
+     * Test of createAttendance method, of class AttendanceManagerImpl.
+     */
+    @Test
+    public void testCreateAttendance() {
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance);
+
+        Integer attendanceId = attendance.getId();
+        assertNotNull(attendanceId);
+        Attendance result = attendanceManager.getAttendanceById(attendanceId);
+        assertEquals(attendance, result);
+        assertNotSame(attendance, result);
+        assertAttendanceDeepEquals(attendance, result);
+    }
+    
+    /**
+     * Tests of createAttendance method of class AttendanceManagerImpl with wrong 
+     * attributes.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testCreateAttendanceWithWrongAttributes1() {
+        attendanceManager.createAttendance(null);
+    }
+    
+    @Test (expected = IllegalEntityException.class)
+    public void testCreateAttendanceWithWrongAttributes2() {
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendance.setId(10);
+        attendanceManager.createAttendance(attendance);
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void testCreateAttendanceWithWrongAttributes3() {   
+        Attendance attendance = newAttendance(null, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance);
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void testCreateAttendanceWithWrongAttributes4() {   
+        Attendance attendance = newAttendance(event1, null, new Date(110L));
+        attendanceManager.createAttendance(attendance);
     }
 
     @Test
@@ -162,7 +207,7 @@ public class AttendanceManagerImplTest {
 
     private void assertAttendanceDeepEquals(Attendance expected, Attendance actual) {
         assertEquals(expected.getId(), actual.getId());
-        assertEventDeepEquals(expected.getEvent(), actual.getEvent());
+        EventManagerImplTest.assertEventDeepEquals(expected.getEvent(), actual.getEvent());
         assertPersonDeepEquals(expected.getPerson(), actual.getPerson());
         assertEquals(expected.getPlannedArrivalTime(), actual.getPlannedArrivalTime());
     }

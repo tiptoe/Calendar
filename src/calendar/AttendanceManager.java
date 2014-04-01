@@ -17,7 +17,7 @@ public interface AttendanceManager {
      * automatically generated and stored into id attribute.
      * 
      * @param attendance The Attendance object being added to database.
-     * @throws IllegalArgumentException when attendance is null, or attendance has already 
+     * @throws IllegalArgumentException when attendance or event is null, or attendance has already 
      * assigned id.
      */
     void createAttendance(Attendance attendance);
@@ -28,7 +28,7 @@ public interface AttendanceManager {
      * @param attendance The Attendance object being updated in database.
      * @throws IllegalArgumentException when attendance is null.
      */
-    void updateeAttendance(Attendance attendance);
+    void updateAttendance(Attendance attendance);
     
     /**
      * Deletes Attendance entry from database.

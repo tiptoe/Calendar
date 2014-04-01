@@ -1,8 +1,8 @@
 ----------------------------------------------------------------
-2014-03-25 10:04:55.990 GMT:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.6.2.1 - (999685): instance a816c00e-0144-f8b3-2cae-000006b81490 
-on database directory memory:D:\SkyDrive\school\2_mag\4.SEMESTR\PV168 Seminar z programovani v jazyce Java\projekt\Calendar\EventManagerTest  with class loader sun.misc.Launcher$AppClassLoader@8955b34 
-Loaded from file:/D:/SkyDrive/school/2_mag/4.SEMESTR/PV168%20Seminar%20z%20programovani%20v%20jazyce%20Java/projekt/Calendar/lib/derby.jar
+2014-04-01 09:35:42.962 GMT:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.6.2.1 - (999685): instance a816c00e-0145-1ca4-f120-00000dd268e0 
+on database directory memory:/home/xstary/java seminar/Calendar/gravemgr-test  with class loader sun.misc.Launcher$AppClassLoader@9cc3baa 
+Loaded from file:/home/xstary/java%20seminar/Calendar/lib/derby.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.7.0_40-b43
+java.runtime.version=1.7.0_25-b15
 Database Class Loader started - derby.database.classpath=''

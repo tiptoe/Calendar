@@ -63,7 +63,7 @@ public class EventManagerImplTest {
         Event result = manager.getEventById(eventId);
         assertEquals(event, result);
         assertNotSame(event, result);
-        assertDeepEquals(event, result);
+        assertEventDeepEquals(event, result);
     }
     
     /**
@@ -239,7 +239,7 @@ public class EventManagerImplTest {
         assertNull(event.getNote());
         
         // Check if updates didn't affected other records
-        assertDeepEquals(event2, manager.getEventById(event2.getId()));
+        assertEventDeepEquals(event2, manager.getEventById(event2.getId()));
     }
     
     /**
@@ -415,7 +415,7 @@ public class EventManagerImplTest {
 
         Event result = manager.getEventById(eventId);
         assertEquals(event, result);
-        assertDeepEquals(event, result);
+        assertEventDeepEquals(event, result);
     }
     
     /**
@@ -469,7 +469,7 @@ public class EventManagerImplTest {
         return event.getId();
     }
 
-    private static void assertDeepEquals(Event expected, Event actual) {
+    public static void assertEventDeepEquals(Event expected, Event actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getStartDate(), actual.getStartDate());
@@ -503,7 +503,7 @@ public class EventManagerImplTest {
         Collections.sort(expectedSortedList,eventKeyComparator);
         Collections.sort(actualSortedList,eventKeyComparator);
         for (int i = 0; i < expectedSortedList.size(); i++) {
-            assertDeepEquals(expectedSortedList.get(i), actualSortedList.get(i));
+            assertEventDeepEquals(expectedSortedList.get(i), actualSortedList.get(i));
         }   
     }
 }
