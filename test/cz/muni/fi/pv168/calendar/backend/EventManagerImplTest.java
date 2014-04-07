@@ -185,7 +185,7 @@ public class EventManagerImplTest {
      * Tests of updateEvent method of class EventManagerImpl.
      */
     @Test
-    public void updateEvent() {
+    public void testUpdateEvent() {
        
         Date startDate = new Date(10L);
         Date endDate = new Date(12L);
@@ -256,12 +256,12 @@ public class EventManagerImplTest {
      * - note: "Super event!"
      */
     @Test (expected = IllegalArgumentException.class)
-    public void updateEventWithWrongAttributes1() {
+    public void testUpdateEventWithWrongAttributes1() {
         manager.updateEvent(null);
     }
     
     @Test (expected = IllegalEntityException.class)
-    public void updateEventWithWrongAttributes2() {
+    public void testUpdateEventWithWrongAttributes2() {
         Integer eventId = setUpTestEvent();    
         
         Event event = manager.getEventById(eventId);
@@ -270,7 +270,7 @@ public class EventManagerImplTest {
     }
     
     @Test (expected = IllegalEntityException.class)
-    public void updateEventWithWrongAttributes3() {
+    public void testUpdateEventWithWrongAttributes3() {
         Integer eventId = setUpTestEvent();     
  
         Event event = manager.getEventById(eventId);
@@ -280,7 +280,7 @@ public class EventManagerImplTest {
     }
     
     @Test (expected = IllegalArgumentException.class)
-    public void updateEventWithWrongAttributes4() {    
+    public void testUpdateEventWithWrongAttributes4() {    
         Integer eventId = setUpTestEvent();
         
         Event event = manager.getEventById(eventId);
@@ -289,7 +289,7 @@ public class EventManagerImplTest {
     }
     
     @Test (expected = IllegalArgumentException.class)
-    public void updateEventWithWrongAttributes5() {    
+    public void testUpdateEventWithWrongAttributes5() {    
         Integer eventId = setUpTestEvent();
         
         Event event = manager.getEventById(eventId);
@@ -298,7 +298,7 @@ public class EventManagerImplTest {
     }
     
     @Test (expected = IllegalArgumentException.class)
-    public void updateEventWithWrongAttributes6() {    
+    public void testUpdateEventWithWrongAttributes6() {    
         Integer eventId = setUpTestEvent();
         
         Event event = manager.getEventById(eventId);
@@ -308,7 +308,7 @@ public class EventManagerImplTest {
     
     // startDate is equal to endDate
     @Test (expected = IllegalArgumentException.class)
-    public void updateEventWithWrongAttributes7() {    
+    public void testUpdateEventWithWrongAttributes7() {    
         Integer eventId = setUpTestEvent();
 
         Event event = manager.getEventById(eventId);
@@ -319,7 +319,7 @@ public class EventManagerImplTest {
     
     // endDate is equal to startDate
     @Test (expected = IllegalArgumentException.class)
-    public void updateEventWithWrongAttributes8() {    
+    public void testUpdateEventWithWrongAttributes8() {    
         Integer eventId = setUpTestEvent();
         
         Event event = manager.getEventById(eventId);
@@ -330,7 +330,7 @@ public class EventManagerImplTest {
     
     // startDate is greater than endDate
     @Test (expected = IllegalArgumentException.class)
-    public void updateEventWithWrongAttributes9() {
+    public void testUpdateEventWithWrongAttributes9() {
         Integer eventId = setUpTestEvent();
         
         Event event = manager.getEventById(eventId);
@@ -341,7 +341,7 @@ public class EventManagerImplTest {
     
     // endDate is less than startDate
     @Test (expected = IllegalArgumentException.class)
-    public void updateEventWithWrongAttributes10() { 
+    public void testUpdateEventWithWrongAttributes10() { 
         Integer eventId = setUpTestEvent();
         
         Event event = manager.getEventById(eventId);
@@ -354,7 +354,7 @@ public class EventManagerImplTest {
      * Tests of deleteEvent method of class EventManagerImpl.
      */
     @Test
-    public void deleteEvent() {
+    public void testDeleteEvent() {
         Date startDate = new Date(10L);
         Date endDate = new Date(12L);
         Event e1 = newTestEvent("My event", startDate, endDate, "Super event!");
@@ -379,12 +379,12 @@ public class EventManagerImplTest {
      * with wrong attributes.
      */
     @Test (expected = IllegalArgumentException.class)
-    public void deleteEventWithWrongAttributes() {    
+    public void testDeleteEventWithWrongAttributes() {    
         manager.deleteEvent(null);
     }
     
     @Test (expected = IllegalEntityException.class)
-    public void deleteEventWithWrongAttributes2() {     
+    public void testDeleteEventWithWrongAttributes2() {     
         Integer eventId = setUpTestEvent();
         
         Event event = manager.getEventById(eventId);
@@ -393,7 +393,7 @@ public class EventManagerImplTest {
     }
         
     @Test (expected = IllegalEntityException.class)
-    public void deleteEventWithWrongAttributes3() { 
+    public void testDeleteEventWithWrongAttributes3() { 
         Integer eventId = setUpTestEvent();
         
         Event event = manager.getEventById(eventId);

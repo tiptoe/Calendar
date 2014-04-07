@@ -4,13 +4,6 @@
  */
 package cz.muni.fi.pv168.calendar.backend;
 
-import cz.muni.fi.pv168.calendar.backend.AttendanceManager;
-import cz.muni.fi.pv168.calendar.backend.AttendanceManagerImpl;
-import cz.muni.fi.pv168.calendar.backend.EventManagerImpl;
-import cz.muni.fi.pv168.calendar.backend.Attendance;
-import cz.muni.fi.pv168.calendar.backend.Event;
-import cz.muni.fi.pv168.calendar.backend.Person;
-import cz.muni.fi.pv168.calendar.backend.PersonManagerImpl;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,7 +22,6 @@ import static cz.muni.fi.pv168.calendar.backend.PersonManagerImplTest.newPerson;
 import static cz.muni.fi.pv168.calendar.backend.PersonManagerImplTest.assertPersonDeepEquals;
 import static cz.muni.fi.pv168.calendar.backend.PersonManagerImplTest.assertPersonCollectionDeepEquals;
 import cz.muni.fi.pv168.common.IllegalEntityException;
-import org.junit.Ignore;
 
 /**
  *
@@ -158,7 +150,7 @@ public class AttendanceManagerImplTest {
     /**
      * Tests of updateAttendance method of class AttendanceManagerImpl.
      */
-    @Ignore
+    @Test
     public void updateAttendance() {
        
         Attendance attendance = newAttendance(event1, person1, new Date(110L));
@@ -178,6 +170,99 @@ public class AttendanceManagerImplTest {
         
         // Check if updates didn't affected other records
         assertAttendanceDeepEquals(attendance2, attendanceManager.getAttendanceById(attendance2.getId()));
+    }
+    
+    /**
+     * Tests of updateAttendance method of class AttendanceManagerImpl
+     * with wrong attributes.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateAttendanceWithWrongAttributes1() {
+        attendanceManager.updateAttendance(null);
+    }
+    
+    @Test (expected = IllegalEntityException.class)
+    public void testUpdateAttendanceWithWrongAttributes2() {
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance);   
+
+        attendance.setId(null);
+        attendanceManager.updateAttendance(attendance);        
+    }
+    
+    @Test (expected = IllegalEntityException.class)
+    public void testUpdateAttendanceWithWrongAttributes3() {
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance);  
+        
+        attendance.setId(attendance.getId() - 1);
+        attendanceManager.updateAttendance(attendance);
+
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateAttendanceWithWrongAttributes4() {    
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance); 
+        
+        attendance.setEvent(null);
+        attendanceManager.updateAttendance(attendance);
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateAttendanceWithWrongAttributes5() {    
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance); 
+        
+        attendance.setPerson(null);
+        attendanceManager.updateAttendance(attendance);
+    }
+    
+    /**
+     * Tests of deleteAttendance method of class AttendanceManagerImpl.
+     */
+    @Test
+    public void testDeleteAttendance() {
+        Attendance a1 = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(a1);
+        
+        Attendance a2 = newAttendance(event2, person2, new Date(120L));
+        attendanceManager.createAttendance(a2);
+        
+        assertNotNull(attendanceManager.getAttendanceById(a1.getId()));
+        assertNotNull(attendanceManager.getAttendanceById(a2.getId()));
+
+        attendanceManager.deleteAttendance(a1);
+        
+        assertNull(attendanceManager.getAttendanceById(a1.getId()));
+        assertNotNull(attendanceManager.getAttendanceById(a2.getId()));          
+    }
+    
+    /**
+     * Tests of deleteAttendance method of class AttendanceManagerImpl
+     * with wrong attributes.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testDeleteAttendanceWithWrongAttributes() {    
+        attendanceManager.deleteAttendance(null);
+    }
+    
+    @Test (expected = IllegalEntityException.class)
+    public void testDeleteAttendanceWithWrongAttributes2() {     
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance);
+        
+        attendance.setId(null);
+        attendanceManager.deleteAttendance(attendance);
+    }
+        
+    @Test (expected = IllegalEntityException.class)
+    public void testDeleteAttendanceWithWrongAttributes3() { 
+        Attendance attendance = newAttendance(event1, person1, new Date(110L));
+        attendanceManager.createAttendance(attendance);
+        
+        attendance.setId(2);
+        attendanceManager.deleteAttendance(attendance);
     }
 
     @Test

@@ -82,12 +82,69 @@ public class AttendanceManagerImpl implements AttendanceManager {
 
     @Override
     public void updateAttendance(Attendance attendance) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        checkDataSource();
+        validate(attendance);
+        if (attendance.getId() == null) {
+            throw new IllegalEntityException("attendance id is null");
+        }        
+        Connection conn = null;
+        PreparedStatement st = null;
+        try {
+            conn = dataSource.getConnection();
+            // Temporary turn autocommit mode off. It is turned back on in 
+            // method DBUtils.closeQuietly(...) 
+            conn.setAutoCommit(false);
+            st = conn.prepareStatement(
+                    "UPDATE ATTENDANCE SET eventId = ?, personId = ?, plannedArrivalTime = ? WHERE id = ?");
+            st.setInt(1, attendance.getEvent().getId() );
+            st.setInt(2, attendance.getPerson().getId() );
+            st.setTimestamp(3, dateToTimestamp(attendance.getPlannedArrivalTime()) );
+            st.setInt(4, attendance.getId());
+
+            int count = st.executeUpdate();
+            DBUtils.checkUpdatesCount(count, attendance, false);
+            conn.commit();
+        } catch (SQLException ex) {
+            String msg = "Error when updating attendance in the db";
+            logger.log(Level.SEVERE, msg, ex);
+            throw new ServiceFailureException(msg, ex);
+        } finally {
+            DBUtils.doRollbackQuietly(conn);
+            DBUtils.closeQuietly(conn, st);
+        }
     }
 
     @Override
     public void deleteAttendance(Attendance attendance) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        checkDataSource();
+        if (attendance == null) {
+            throw new IllegalArgumentException("attendance is null");
+        }        
+        if (attendance.getId() == null) {
+            throw new IllegalEntityException("attendance id is null");
+        }        
+        Connection conn = null;
+        PreparedStatement st = null;
+        try {
+            conn = dataSource.getConnection();
+            // Temporary turn autocommit mode off. It is turned back on in 
+            // method DBUtils.closeQuietly(...) 
+            conn.setAutoCommit(false);
+            st = conn.prepareStatement(
+                    "DELETE FROM ATTENDANCE WHERE id = ?");
+            st.setInt(1, attendance.getId());
+
+            int count = st.executeUpdate();
+            DBUtils.checkUpdatesCount(count, attendance, false);
+            conn.commit();
+        } catch (SQLException ex) {
+            String msg = "Error when deleting attendance from the db";
+            logger.log(Level.SEVERE, msg, ex);
+            throw new ServiceFailureException(msg, ex);
+        } finally {
+            DBUtils.doRollbackQuietly(conn);
+            DBUtils.closeQuietly(conn, st);
+        }
     }
 
     @Override
