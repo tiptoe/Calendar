@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package calendar;
+package cz.muni.fi.pv168.calendar.backend;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import common.DBUtils;
-import common.ServiceFailureException;
+import cz.muni.fi.pv168.common.DBUtils;
+import cz.muni.fi.pv168.common.ServiceFailureException;
 import javax.sql.DataSource;
 
 /**

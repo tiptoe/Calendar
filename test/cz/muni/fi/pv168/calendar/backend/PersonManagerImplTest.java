@@ -1,5 +1,8 @@
-package calendar;
+package cz.muni.fi.pv168.calendar.backend;
 
+import cz.muni.fi.pv168.calendar.backend.Person;
+import cz.muni.fi.pv168.calendar.backend.PersonManagerImpl;
+import cz.muni.fi.pv168.calendar.backend.PersonManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,7 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import common.DBUtils;
+import cz.muni.fi.pv168.common.DBUtils;
 
 /**
  *

@@ -1,5 +1,8 @@
-package calendar;
+package cz.muni.fi.pv168.calendar.backend;
 
+import cz.muni.fi.pv168.calendar.backend.EventManagerImpl;
+import cz.muni.fi.pv168.calendar.backend.Event;
+import cz.muni.fi.pv168.calendar.backend.PersonManager;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Date;
@@ -10,9 +13,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.apache.commons.dbcp.BasicDataSource;
-import common.ValidationException;
-import common.IllegalEntityException;
-import common.DBUtils;
+import cz.muni.fi.pv168.common.ValidationException;
+import cz.muni.fi.pv168.common.IllegalEntityException;
+import cz.muni.fi.pv168.common.DBUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

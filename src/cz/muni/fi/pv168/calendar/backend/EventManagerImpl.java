@@ -1,10 +1,10 @@
-package calendar;
+package cz.muni.fi.pv168.calendar.backend;
 
-import common.ServiceFailureException;
-import common.ValidationException;
-import common.IllegalEntityException;
-import common.DBUtils;
-import common.ServiceFailureException;
+import cz.muni.fi.pv168.common.ServiceFailureException;
+import cz.muni.fi.pv168.common.ValidationException;
+import cz.muni.fi.pv168.common.IllegalEntityException;
+import cz.muni.fi.pv168.common.DBUtils;
+import cz.muni.fi.pv168.common.ServiceFailureException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

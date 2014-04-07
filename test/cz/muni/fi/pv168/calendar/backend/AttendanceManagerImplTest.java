@@ -2,8 +2,15 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package calendar;
+package cz.muni.fi.pv168.calendar.backend;
 
+import cz.muni.fi.pv168.calendar.backend.AttendanceManager;
+import cz.muni.fi.pv168.calendar.backend.AttendanceManagerImpl;
+import cz.muni.fi.pv168.calendar.backend.EventManagerImpl;
+import cz.muni.fi.pv168.calendar.backend.Attendance;
+import cz.muni.fi.pv168.calendar.backend.Event;
+import cz.muni.fi.pv168.calendar.backend.Person;
+import cz.muni.fi.pv168.calendar.backend.PersonManagerImpl;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,13 +22,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import common.DBUtils;
+import cz.muni.fi.pv168.common.DBUtils;
 import java.util.Date;
 
-import static calendar.PersonManagerImplTest.newPerson;
-import static calendar.PersonManagerImplTest.assertPersonDeepEquals;
-import static calendar.PersonManagerImplTest.assertPersonCollectionDeepEquals;
-import common.IllegalEntityException;
+import static cz.muni.fi.pv168.calendar.backend.PersonManagerImplTest.newPerson;
+import static cz.muni.fi.pv168.calendar.backend.PersonManagerImplTest.assertPersonDeepEquals;
+import static cz.muni.fi.pv168.calendar.backend.PersonManagerImplTest.assertPersonCollectionDeepEquals;
+import cz.muni.fi.pv168.common.IllegalEntityException;
 import org.junit.Ignore;
 
 /**

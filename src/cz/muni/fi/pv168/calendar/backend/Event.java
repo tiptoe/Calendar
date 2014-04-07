@@ -1,16 +1,23 @@
-package calendar;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package cz.muni.fi.pv168.calendar.backend;
+
+import java.util.Date;
 
 /**
  *
- * @author Jan Smerda
+ * @author Honza
  */
-public class Person {
+public class Event {
     
     private Integer id;
     private String name;
-    private String email;
+    private Date startDate;
+    private Date endDate;
     private String note;
-
+    
     public Integer getId() {
         return id;
     }
@@ -18,36 +25,44 @@ public class Person {
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
-        
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    
+    public Date getStartDate() {
+        return startDate;
     }
     
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+    
+    public Date getEndDate() {
+        return endDate;
+    }
+    
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
     public String getNote() {
         return note;
     }
- 
+
     public void setNote(String note) {
         this.note = note;
     }
     
     @Override
     public String toString() {
-        return "Person id=" + id;
+        return "Event{" + "id=" + id + '}';
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -56,21 +71,19 @@ public class Person {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Person other = (Person) obj;
+        final Event other = (Event) obj;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
             return false;
         }
         return true;
     }
-    
+
     @Override
     public int hashCode() {
-        int hash = 23;
-        hash = hash * 73+ (this.id != null ? this.id.hashCode() : 0);
+        int hash = 7;
+        hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
-    }
-    
-    
+    } 
     
     
 }

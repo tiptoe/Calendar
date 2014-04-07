@@ -2,22 +2,21 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package calendar;
+package cz.muni.fi.pv168.calendar.backend;
 
 import java.util.Date;
 
 /**
  *
- * @author Honza
+ * @author Jan Smerda, Jiri Stary
  */
-public class Event {
+public class Attendance {
     
     private Integer id;
-    private String name;
-    private Date startDate;
-    private Date endDate;
-    private String note;
-    
+    private Event event;
+    private Person person;
+    private Date plannedArrivalTime;
+
     public Integer getId() {
         return id;
     }
@@ -25,42 +24,34 @@ public class Event {
     public void setId(Integer id) {
         this.id = id;
     }
-
-    public String getName() {
-        return name;
-    }
     
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public Date getStartDate() {
-        return startDate;
-    }
-    
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-    
-    public Date getEndDate() {
-        return endDate;
-    }
-    
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public Event getEvent() {
+        return event;
     }
 
-    public String getNote() {
-        return note;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public Date getPlannedArrivalTime() {
+        return plannedArrivalTime;
+    }
+
+    public void setPlannedArrivalTime(Date plannedArrivalTime) {
+        this.plannedArrivalTime = plannedArrivalTime;
     }
     
     @Override
     public String toString() {
-        return "Event{" + "id=" + id + '}';
+        return "Attendance{" + "id=" + id + '}';
     }
 
     @Override
@@ -71,7 +62,7 @@ public class Event {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Event other = (Event) obj;
+        final Attendance other = (Attendance) obj;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
             return false;
         }
@@ -83,7 +74,7 @@ public class Event {
         int hash = 7;
         hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
-    } 
+    }
     
     
 }

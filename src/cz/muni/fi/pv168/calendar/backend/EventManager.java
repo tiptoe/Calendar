@@ -1,4 +1,4 @@
-package calendar;
+package cz.muni.fi.pv168.calendar.backend;
 
 import java.util.Date;
 import java.util.List;
