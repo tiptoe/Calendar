@@ -191,7 +191,7 @@ public class EventManagerImpl implements EventManager {
             st.setTimestamp(2, dateToTimestamp(startDate) );
             return executeQueryForMultipleEvents(st);
         } catch (SQLException ex) {
-            String msg = "Error when getting all graves from DB";
+            String msg = "Error when getting all events from DB";
             logger.log(Level.SEVERE, msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
