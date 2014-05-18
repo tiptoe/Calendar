@@ -1,5 +1,7 @@
 package cz.muni.fi.pv168.calendar.backend;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import cz.muni.fi.pv168.common.ServiceFailureException;
 import cz.muni.fi.pv168.common.ValidationException;
 import cz.muni.fi.pv168.common.IllegalEntityException;
@@ -14,8 +16,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 /**
@@ -24,8 +24,8 @@ import javax.sql.DataSource;
  */
 public class EventManagerImpl implements EventManager {
     
-    private static final Logger logger = 
-            Logger.getLogger(EventManagerImpl.class.getName());
+    final static Logger logger = LoggerFactory.getLogger(EventManagerImpl.class);
+
     
     private DataSource dataSource;
 
@@ -41,6 +41,7 @@ public class EventManagerImpl implements EventManager {
 
     @Override
     public void createEvent(Event event) throws ServiceFailureException{
+        logger.info("Creating new event {}", event);
         
         checkDataSource();
         validate(event);
@@ -73,7 +74,7 @@ public class EventManagerImpl implements EventManager {
             
         } catch (SQLException ex) {
             String msg = "Error when inserting event into db.";
-            logger.log(Level.SEVERE, msg, ex);
+            logger.error(msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
             DBUtils.doRollbackQuietly(connection);
@@ -82,7 +83,9 @@ public class EventManagerImpl implements EventManager {
     }
 
     @Override
-    public void updateEvent(Event event) {      
+    public void updateEvent(Event event) {
+        logger.info("Updating event {}", event);
+        
         checkDataSource();
         validate(event);
         
@@ -111,7 +114,7 @@ public class EventManagerImpl implements EventManager {
             connection.commit();
         } catch (SQLException ex) {
             String msg = "Error when updating event in the db";
-            logger.log(Level.SEVERE, msg, ex);
+            logger.error(msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
             DBUtils.doRollbackQuietly(connection);
@@ -121,6 +124,8 @@ public class EventManagerImpl implements EventManager {
 
     @Override
     public void deleteEvent(Event event) {
+        logger.info("Removing event {}", event);
+        
         checkDataSource();
         if (event == null) {
             throw new IllegalArgumentException("event is null");
@@ -145,7 +150,7 @@ public class EventManagerImpl implements EventManager {
             connection.commit();
         } catch (SQLException ex) {
             String msg = "Error when deleting event from the db";
-            logger.log(Level.SEVERE, msg, ex);
+            logger.error(msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
             DBUtils.doRollbackQuietly(connection);
@@ -155,6 +160,8 @@ public class EventManagerImpl implements EventManager {
 
     @Override
     public Event getEventById(Integer id) throws ServiceFailureException {
+        logger.info("Finding event with id {}", id);
+        
         checkDataSource();
         
         if (id == null) {
@@ -171,7 +178,7 @@ public class EventManagerImpl implements EventManager {
             return executeQueryForSingleEvent(st);
         } catch (SQLException ex) {
             String msg = "Error when getting event with id = " + id + " from DB";
-            logger.log(Level.SEVERE, msg, ex);
+            logger.error(msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
             DBUtils.closeQuietly(connection, st);
@@ -180,6 +187,8 @@ public class EventManagerImpl implements EventManager {
 
     @Override
     public List<Event> findEventsByDate(Date startDate, Date endDate) {
+        logger.info("Finding events by date - Start date {}, End date {}", startDate, endDate);
+        
         checkDataSource();
         Connection connection = null;
         PreparedStatement st = null;
@@ -192,7 +201,7 @@ public class EventManagerImpl implements EventManager {
             return executeQueryForMultipleEvents(st);
         } catch (SQLException ex) {
             String msg = "Error when getting all events from DB";
-            logger.log(Level.SEVERE, msg, ex);
+            logger.error(msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
             DBUtils.closeQuietly(connection, st);

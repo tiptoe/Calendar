@@ -14,11 +14,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.util.Date;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  *
@@ -26,7 +26,7 @@ import java.util.Date;
  */
 public class AttendanceManagerImpl implements AttendanceManager {
 
-    public static final Logger logger = Logger.getLogger(AttendanceManagerImpl.class.getName());
+    final static Logger logger = LoggerFactory.getLogger(AttendanceManagerImpl.class);
     private static DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
@@ -41,6 +41,7 @@ public class AttendanceManagerImpl implements AttendanceManager {
 
     @Override
     public void createAttendance(Attendance attendance) throws ServiceFailureException {
+        logger.info("Creating new attendance {}", attendance);
         
         checkDataSource();
         validate(attendance);
@@ -72,7 +73,7 @@ public class AttendanceManagerImpl implements AttendanceManager {
             
         } catch (SQLException ex) {
             String msg = "Error when inserting event into db.";
-            logger.log(Level.SEVERE, msg, ex);
+            logger.error(msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
             DBUtils.doRollbackQuietly(connection);
@@ -82,6 +83,8 @@ public class AttendanceManagerImpl implements AttendanceManager {
 
     @Override
     public void updateAttendance(Attendance attendance) {
+        logger.info("Updating attendance {}", attendance);
+        
         checkDataSource();
         validate(attendance);
         if (attendance.getId() == null) {
@@ -106,7 +109,7 @@ public class AttendanceManagerImpl implements AttendanceManager {
             conn.commit();
         } catch (SQLException ex) {
             String msg = "Error when updating attendance in the db";
-            logger.log(Level.SEVERE, msg, ex);
+            logger.error(msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
             DBUtils.doRollbackQuietly(conn);
@@ -116,6 +119,8 @@ public class AttendanceManagerImpl implements AttendanceManager {
 
     @Override
     public void deleteAttendance(Attendance attendance) {
+        logger.info("Removing attendance {}", attendance);
+        
         checkDataSource();
         if (attendance == null) {
             throw new IllegalArgumentException("attendance is null");
@@ -139,7 +144,7 @@ public class AttendanceManagerImpl implements AttendanceManager {
             conn.commit();
         } catch (SQLException ex) {
             String msg = "Error when deleting attendance from the db";
-            logger.log(Level.SEVERE, msg, ex);
+            logger.error(msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
             DBUtils.doRollbackQuietly(conn);
@@ -149,9 +154,9 @@ public class AttendanceManagerImpl implements AttendanceManager {
 
     @Override
     public Attendance getAttendanceById(Integer id) throws ServiceFailureException {
+        logger.info("Finding attendance by id {}", id);
         
-        checkDataSource();
-        
+        checkDataSource();        
         if (id == null) {
             throw new IllegalArgumentException("id is null");
         }
@@ -166,7 +171,7 @@ public class AttendanceManagerImpl implements AttendanceManager {
             return executeQueryForSingleAttendance(st);
         } catch (SQLException ex) {
             String msg = "Error when getting attendance with id = " + id + " from DB";
-            logger.log(Level.SEVERE, msg, ex);
+            logger.error(msg, ex);
             throw new ServiceFailureException(msg, ex);
         } finally {
             DBUtils.closeQuietly(connection, st);
@@ -175,6 +180,8 @@ public class AttendanceManagerImpl implements AttendanceManager {
 
     @Override
     public List<Attendance> findAllAttendances() {
+        logger.info("Finding all attendances");
+        
         checkDataSource();
         Connection conn = null;
         PreparedStatement statement = null;
@@ -185,7 +192,7 @@ public class AttendanceManagerImpl implements AttendanceManager {
             return executeQueryForMultipleAttendances(statement);
         } catch (SQLException ex) {
             String message = "Error when retrieving all Attendances";
-            logger.log(Level.SEVERE, message, ex);
+            logger.error(message, ex);
             throw new ServiceFailureException(message, ex);
         } finally {
             DBUtils.closeQuietly(conn, statement);
@@ -194,6 +201,8 @@ public class AttendanceManagerImpl implements AttendanceManager {
 
     @Override
     public List<Attendance> findAttendancesForEvent(Event event) {
+        logger.info("Finding all attendances for event {}", event);
+        
         checkDataSource();
         Connection conn = null;
         PreparedStatement statement = null;
@@ -205,7 +214,7 @@ public class AttendanceManagerImpl implements AttendanceManager {
             return executeQueryForMultipleAttendances(statement);
         } catch (SQLException ex) {
             String message = "Error when retrieving Attendances associated with event " + event;
-            logger.log(Level.SEVERE, message, ex);
+            logger.error(message, ex);
             throw new ServiceFailureException(message, ex);
         } finally {
             DBUtils.closeQuietly(conn, statement);
@@ -214,6 +223,8 @@ public class AttendanceManagerImpl implements AttendanceManager {
 
     @Override
     public List<Attendance> findAttendancesForPerson(Person person) {
+        logger.info("Finding all attendances for person {}", person);
+        
         checkDataSource();
         Connection conn = null;
         PreparedStatement statement = null;
@@ -225,7 +236,7 @@ public class AttendanceManagerImpl implements AttendanceManager {
             return executeQueryForMultipleAttendances(statement);
         } catch (SQLException ex) {
             String message = "Error when retrieving Attendances associated with person " + person;
-            logger.log(Level.SEVERE, message, ex);
+            logger.error(message, ex);
             throw new ServiceFailureException(message, ex);
         } finally {
             DBUtils.closeQuietly(conn, statement);

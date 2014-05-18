@@ -11,9 +11,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -21,8 +21,7 @@ import javax.sql.DataSource;
  */
 public class DBUtils {
     
-    private static final Logger logger = Logger.getLogger(
-            DBUtils.class.getName());
+    final static Logger logger = LoggerFactory.getLogger(DBUtils.class);
 
     /**
      * Closes connection and logs possible error.
@@ -36,7 +35,7 @@ public class DBUtils {
                 try {
                     st.close();
                 } catch (SQLException ex) {
-                    logger.log(Level.SEVERE, "Error when closing statement", ex);
+                    logger.error("Error when closing statement", ex);
                 }                
             }
         }        
@@ -44,12 +43,12 @@ public class DBUtils {
             try {
                 conn.setAutoCommit(true);
             } catch (SQLException ex) {
-                logger.log(Level.SEVERE, "Error when switching autocommit mode back to true", ex);
+                logger.error("Error when switching autocommit mode back to true", ex);
             }
             try {
                 conn.close();
             } catch (SQLException ex) {
-                logger.log(Level.SEVERE, "Error when closing connection", ex);
+                logger.error("Error when closing connection", ex);
             }
         }
     }
@@ -67,7 +66,7 @@ public class DBUtils {
                 }
                 conn.rollback();
             } catch (SQLException ex) {
-                logger.log(Level.SEVERE, "Error when doing rollback", ex);
+                logger.error("Error when doing rollback", ex);
             }
         }
     }
@@ -130,7 +129,7 @@ public class DBUtils {
     public static void tryCreateTables(DataSource ds, URL scriptUrl) throws SQLException {
         try {
             executeSqlScript(ds, scriptUrl);
-            logger.warning("Tables created");
+            logger.warn("Tables created");
         } catch (SQLException ex) {
             if ("X0Y32".equals(ex.getSQLState())) {
                 // This code represents "Table/View/... already exists"

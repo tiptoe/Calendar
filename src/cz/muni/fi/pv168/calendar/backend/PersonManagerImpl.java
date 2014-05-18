@@ -11,11 +11,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import cz.muni.fi.pv168.common.DBUtils;
 import cz.muni.fi.pv168.common.ServiceFailureException;
 import javax.sql.DataSource;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  *
@@ -23,7 +23,7 @@ import javax.sql.DataSource;
  */
 public class PersonManagerImpl implements PersonManager {
 
-    public static final Logger logger = Logger.getLogger(PersonManagerImpl.class.getName());
+    final static Logger logger = LoggerFactory.getLogger(EventManagerImpl.class);
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
@@ -38,6 +38,8 @@ public class PersonManagerImpl implements PersonManager {
 
     @Override
     public void createPerson(Person person) {
+        logger.info("Creating new person {}", person);
+        
         checkDataSource();
         validate(person);
 
@@ -65,7 +67,7 @@ public class PersonManagerImpl implements PersonManager {
             conn.commit();
         } catch (SQLException ex) {
             String message = "Error when inserting person " + person;
-            logger.log(Level.SEVERE, message, ex);
+            logger.error(message, ex);
             throw new ServiceFailureException(message, ex);
         } finally {
             DBUtils.doRollbackQuietly(conn);
@@ -77,6 +79,8 @@ public class PersonManagerImpl implements PersonManager {
 
     @Override
     public void updatePerson(Person person) {
+        logger.info("Updating person {}", person);
+        
         checkDataSource();
         validate(person);
         if (person.getId() == null) {
@@ -106,7 +110,7 @@ public class PersonManagerImpl implements PersonManager {
             conn.commit();
         } catch (SQLException ex) {
             String message = "Error when updating person " + person;
-            logger.log(Level.SEVERE, message, ex);
+            logger.error(message, ex);
             throw new ServiceFailureException(message, ex);
         } finally {
             DBUtils.doRollbackQuietly(conn);
@@ -116,6 +120,8 @@ public class PersonManagerImpl implements PersonManager {
 
     @Override
     public void deletePerson(Person person) {
+        logger.info("Removing person {}", person);
+        
         checkDataSource();
         if (person == null) {
             throw new IllegalArgumentException("Person is null.");
@@ -144,7 +150,7 @@ public class PersonManagerImpl implements PersonManager {
             conn.commit();
         } catch (SQLException ex) {
             String message = "Error when deleting person " + person;
-            logger.log(Level.SEVERE, message, ex);
+            logger.error(message, ex);
             throw new ServiceFailureException(message, ex);
         } finally {
             DBUtils.doRollbackQuietly(conn);
@@ -154,6 +160,8 @@ public class PersonManagerImpl implements PersonManager {
 
     @Override
     public Person getPersonById(Integer id) {
+        logger.info("Finding person with id {}", id);
+        
         checkDataSource();
 
         if (id == null) {
@@ -170,7 +178,7 @@ public class PersonManagerImpl implements PersonManager {
             return executeQueryForSinglePerson(statement);
         } catch (SQLException ex) {
             String message = "Error when retrieving person with id " + id;
-            logger.log(Level.SEVERE, message, ex);
+            logger.error(message, ex);
             throw new ServiceFailureException(message, ex);
         } finally {
             DBUtils.closeQuietly(conn, statement);
@@ -179,6 +187,8 @@ public class PersonManagerImpl implements PersonManager {
 
     @Override
     public List<Person> findAllPersons() {
+        logger.info("Finding all persons");
+        
         checkDataSource();
         Connection conn = null;
         PreparedStatement statement = null;
@@ -189,7 +199,7 @@ public class PersonManagerImpl implements PersonManager {
             return executeQueryForMultiplePersons(statement);
         } catch (SQLException ex) {
             String message = "Error when retrieving all persons";
-            logger.log(Level.SEVERE, message, ex);
+            logger.error(message, ex);
             throw new ServiceFailureException(message, ex);
         } finally {
             DBUtils.closeQuietly(conn, statement);
